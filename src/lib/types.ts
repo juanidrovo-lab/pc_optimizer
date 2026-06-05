@@ -25,11 +25,22 @@ export interface CleanableItem {
   path: string;
   size_bytes: number;
   description: string;
+  item_type: string;
+}
+
+export interface CategoryResult {
+  name: string;
+  description: string;
+  path: string;
+  size_bytes: number;
+  file_count: number;
+  items: CleanableItem[];
 }
 
 export interface ScanResult {
-  items: CleanableItem[];
+  categories: CategoryResult[];
   total_bytes: number;
+  total_files: number;
 }
 
 export interface SystemHealth {
