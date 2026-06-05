@@ -68,3 +68,19 @@ export interface PingResult {
   region: string;
   latency_ms: number | null;
 }
+
+export interface RestorePoint {
+  id: number;
+  scan_id: number | null;
+  description: string;
+  created_at: string;
+}
+
+export interface DeletedFile {
+  id: number;
+  scan_id: number;
+  path: string;
+  size_bytes: number;
+  category: string;
+  created_at: string;
+}

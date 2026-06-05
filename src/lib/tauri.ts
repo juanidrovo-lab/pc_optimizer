@@ -8,6 +8,7 @@ import type {
   PingResult,
   ScanHistory,
   ChangeLog,
+  RestorePoint,
 } from "./types";
 
 export async function scanTempFiles(): Promise<ScanResult> {
@@ -60,6 +61,18 @@ export async function getChangeLog(): Promise<ChangeLog[]> {
   return invoke("get_change_log");
 }
 
+export async function getPendingChanges(): Promise<ChangeLog[]> {
+  return invoke("get_pending_changes");
+}
+
+export async function getRestorePoints(): Promise<RestorePoint[]> {
+  return invoke("get_restore_points");
+}
+
 export async function revertChange(changeId: number): Promise<void> {
   return invoke("revert_change", { changeId });
+}
+
+export async function createRestorePoint(description: string): Promise<number> {
+  return invoke("create_restore_point", { description });
 }

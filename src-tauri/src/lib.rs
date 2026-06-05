@@ -39,7 +39,10 @@ pub fn run() {
             commands::network::ping_servers,
             commands::history::get_scan_history,
             commands::history::get_change_log,
+            commands::history::get_pending_changes,
+            commands::history::get_restore_points,
             commands::history::revert_change,
+            commands::history::create_restore_point,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
