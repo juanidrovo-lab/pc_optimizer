@@ -1,0 +1,48 @@
+.container {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  padding: 10px 12px;
+  position: relative;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 8px;
+}
+
+.label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+}
+
+.currentValue {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.unit {
+  font-size: 10px;
+  font-weight: 500;
+  margin-left: 2px;
+  opacity: 0.6;
+}
+
+.chart {
+  border: 1px solid var(--border-primary);
+  background: var(--bg-primary);
+}
+
+.scale {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 4px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-muted);
+}

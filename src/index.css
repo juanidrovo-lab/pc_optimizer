@@ -1,0 +1,135 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg-primary: #0d0d0d;
+  --bg-secondary: #141414;
+  --bg-tertiary: #1a1a1a;
+  --bg-surface: #1e1e1e;
+  --bg-elevated: #242424;
+  --bg-hover: #2a2a2a;
+
+  --border-primary: #2a2a2a;
+  --border-secondary: #333333;
+  --border-accent: #39ff14;
+
+  --text-primary: #e0e0e0;
+  --text-secondary: #888888;
+  --text-muted: #555555;
+
+  --accent: #39ff14;
+  --accent-dim: #39ff1433;
+  --accent-glow: #39ff1466;
+
+  --status-ok: #39ff14;
+  --status-warn: #ffb800;
+  --status-critical: #ff3333;
+
+  --font-mono: 'JetBrains Mono', 'Cascadia Code', 'Fira Code', monospace;
+  --font-sans: 'Inter', -apple-system, sans-serif;
+
+  --sidebar-width: 200px;
+  --header-height: 40px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 13px;
+  line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-secondary);
+  border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+input, select, textarea {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  color: var(--text-primary);
+  padding: 4px 8px;
+  outline: none;
+}
+
+input:focus, select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent-dim);
+}
+
+button {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--border-primary);
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  padding: 6px 14px;
+  transition: background 0.1s, border-color 0.1s;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+button:hover {
+  background: var(--bg-hover);
+  border-color: var(--border-secondary);
+}
+
+button.primary {
+  background: var(--accent);
+  color: var(--bg-primary);
+  border-color: var(--accent);
+}
+
+button.primary:hover {
+  background: #2ecc0f;
+  border-color: #2ecc0f;
+}
+
+button.danger {
+  border-color: var(--status-critical);
+  color: var(--status-critical);
+}
+
+button.danger:hover {
+  background: #ff333322;
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+.text-accent { color: var(--accent); }
+.text-warn { color: var(--status-warn); }
+.text-critical { color: var(--status-critical); }
+.text-muted { color: var(--text-secondary); }
