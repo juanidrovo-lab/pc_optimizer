@@ -2,6 +2,9 @@ import { invoke } from "@tauri-apps/api/core";
 import type {
   ScanResult,
   SystemHealth,
+  TemperatureData,
+  SmartData,
+  BatteryHealth,
   StartupItem,
   ServiceInfo,
   NetworkStatus,
@@ -21,6 +24,18 @@ export async function cleanSelectedFiles(paths: string[]): Promise<number> {
 
 export async function getSystemHealth(): Promise<SystemHealth> {
   return invoke("get_system_health");
+}
+
+export async function getTemperatures(): Promise<TemperatureData> {
+  return invoke("get_temperatures");
+}
+
+export async function getSmartData(): Promise<SmartData> {
+  return invoke("get_smart_data");
+}
+
+export async function getBatteryHealth(): Promise<BatteryHealth> {
+  return invoke("get_battery_health");
 }
 
 export async function getStartupItems(): Promise<StartupItem[]> {

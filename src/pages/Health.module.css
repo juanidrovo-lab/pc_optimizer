@@ -17,7 +17,14 @@
   padding-left: 2px;
 }
 
-.tempGrid {
+.metricsRow {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.tempRow {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px;
@@ -58,16 +65,23 @@
   color: var(--text-primary);
 }
 
-.smartNote {
+.smartUnavailable {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 11px;
   color: var(--text-muted);
-  margin-top: 6px;
-  padding-left: 2px;
+  padding: 14px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
 }
 
 .batteryGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 8px;
+}
+
+@media (max-width: 1000px) {
+  .metricsRow {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
