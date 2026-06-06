@@ -3,6 +3,14 @@
   overflow-y: auto;
 }
 
+.loading {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-muted);
+  padding: 20px;
+  text-align: center;
+}
+
 .statusGrid {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -14,6 +22,11 @@
   background: var(--bg-secondary);
   border: 1px solid var(--border-primary);
   padding: 12px 14px;
+  transition: border-color 0.15s;
+}
+
+.statusCard:hover {
+  border-color: var(--border-secondary);
 }
 
 .statusLabel {
@@ -30,6 +43,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  margin-bottom: 4px;
 }
 
 .statusDot {
@@ -38,11 +52,24 @@
   display: inline-block;
 }
 
+.statusAction {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-muted);
+}
+
 .dnsValue {
   font-family: var(--font-mono);
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
   color: var(--accent);
+  margin-bottom: 4px;
+}
+
+.dnsDetail {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
 }
 
 .section {
@@ -100,7 +127,27 @@
 
 .pingLatency {
   font-family: var(--font-mono);
-  font-size: 22px;
+  font-size: 28px;
   font-weight: 700;
-  margin-top: 6px;
+  margin-top: 8px;
+  line-height: 1;
+}
+
+.pingUnit {
+  font-size: 12px;
+  font-weight: 500;
+  margin-left: 2px;
+  opacity: 0.6;
+}
+
+.pingQuality {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+@media (max-width: 900px) {
+  .pingGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }

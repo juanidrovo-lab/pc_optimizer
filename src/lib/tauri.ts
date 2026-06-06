@@ -44,9 +44,17 @@ export async function getStartupItems(): Promise<StartupItem[]> {
 
 export async function toggleStartupItem(
   name: string,
+  location: string,
   enable: boolean
 ): Promise<void> {
-  return invoke("toggle_startup_item", { name, enable });
+  return invoke("toggle_startup_item", { name, location, enable });
+}
+
+export async function getBootTimes(): Promise<{
+  last_boot_ms: number;
+  average_boot_ms: number;
+}> {
+  return invoke("get_boot_times");
 }
 
 export async function getServices(): Promise<ServiceInfo[]> {
@@ -55,13 +63,39 @@ export async function getServices(): Promise<ServiceInfo[]> {
 
 export async function setServiceStartType(
   name: string,
-  startType: string
+  displayName: string,
+  currentStartType: string,
+  newStartType: string
 ): Promise<void> {
-  return invoke("set_service_start_type", { name, startType });
+  return invoke("set_service_start_type", {
+    name,
+    displayName,
+    currentStartType,
+    newStartType,
+  });
 }
 
 export async function getNetworkStatus(): Promise<NetworkStatus> {
   return invoke("get_network_status");
+}
+
+export async function setDns(
+  interfaceName: string,
+  provider: string,
+  currentDns: string[]
+): Promise<void> {
+  return invoke("set_dns", { interfaceName, provider, currentDns });
+}
+
+export async function toggleIpv6(
+  interfaceName: string,
+  enable: boolean
+): Promise<void> {
+  return invoke("toggle_ipv6", { interfaceName, enable });
+}
+
+export async function toggleNagle(enable: boolean): Promise<void> {
+  return invoke("toggle_nagle", { enable });
 }
 
 export async function pingServers(): Promise<PingResult[]> {

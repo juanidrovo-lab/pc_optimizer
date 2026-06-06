@@ -4,15 +4,88 @@
   flex-direction: column;
 }
 
+.tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.loading {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-muted);
+  padding: 20px;
+  text-align: center;
+}
+
 .list {
   flex: 1;
   overflow-y: auto;
   border: 1px solid var(--border-primary);
 }
 
-.listHeader {
+/* Changes tab */
+.changeHeader {
   display: grid;
-  grid-template-columns: 150px 110px 1.5fr 2fr 100px;
+  grid-template-columns: 140px 90px 80px 1.2fr 2fr 100px;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border-primary);
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.changeItem {
+  display: grid;
+  grid-template-columns: 140px 90px 80px 1.2fr 2fr 100px;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-primary);
+}
+
+.changeItem.reverted {
+  opacity: 0.5;
+}
+
+/* History tab */
+.historyHeader {
+  display: grid;
+  grid-template-columns: 140px 90px 1.5fr 2fr 90px;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border-primary);
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.historyItem {
+  display: grid;
+  grid-template-columns: 140px 90px 1.5fr 2fr 90px;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-primary);
+}
+
+/* Restore tab */
+.restoreHeader {
+  display: grid;
+  grid-template-columns: 140px 1fr 100px;
   gap: 8px;
   padding: 8px 12px;
   background: var(--bg-tertiary);
@@ -24,18 +97,39 @@
   letter-spacing: 1.2px;
 }
 
-.item {
+.restoreItem {
   display: grid;
-  grid-template-columns: 150px 110px 1.5fr 2fr 100px;
+  grid-template-columns: 140px 1fr 100px;
   gap: 8px;
   align-items: center;
-  padding: 10px 12px;
+  padding: 8px 12px;
   border-bottom: 1px solid var(--border-primary);
 }
 
-.date {
+.restoreDesc {
+  font-size: 12px;
+  color: var(--text-primary);
+}
+
+.restoreScan {
   font-family: var(--font-mono);
   font-size: 11px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.restoreNote {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  padding: 12px 14px;
+  line-height: 1.6;
+}
+
+/* Shared */
+.date {
+  font-family: var(--font-mono);
+  font-size: 10px;
   color: var(--text-muted);
 }
 
@@ -53,43 +147,97 @@
   width: 6px;
   height: 6px;
   display: inline-block;
+  flex-shrink: 0;
+}
+
+.changeType {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.target {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-primary);
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.values {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow: hidden;
+}
+
+.prevValue {
+  color: var(--status-warn);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.arrow {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.newValue {
+  color: var(--accent);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .action {
+  display: flex;
+  justify-content: center;
+}
+
+.revertedLabel {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.revertedDate {
+  font-size: 8px;
+  display: block;
+}
+
+.historyAction {
   font-size: 12px;
   color: var(--text-primary);
   font-weight: 500;
 }
 
-.details {
+.historyDetails {
   font-family: var(--font-mono);
   font-size: 10px;
   color: var(--text-secondary);
 }
 
-.status {
-  display: flex;
-  justify-content: center;
-}
-
-.reverted {
+.historyBytes {
   font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--text-muted);
-  letter-spacing: 0.5px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent);
+  text-align: right;
 }
 
-.empty {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
+.emptyRow {
+  padding: 20px;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 12px;
   color: var(--text-muted);
-}
-
-.emptyIcon {
-  font-size: 48px;
-  opacity: 0.3;
 }

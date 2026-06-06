@@ -100,9 +100,15 @@ export interface BatteryHealth {
 
 export interface StartupItem {
   name: string;
-  path: string;
+  command: string;
+  location: string;
   enabled: boolean;
-  impact: string;
+  user: string;
+}
+
+export interface BootTime {
+  last_boot_ms: number;
+  average_boot_ms: number;
 }
 
 export interface ServiceInfo {
@@ -112,12 +118,14 @@ export interface ServiceInfo {
   status: string;
   start_type: string;
   classification: string;
+  dependencies: string[];
 }
 
 export interface NetworkStatus {
   ipv6_enabled: boolean;
   nagle_enabled: boolean;
   current_dns: string[];
+  interface_name: string;
 }
 
 export interface PingResult {
