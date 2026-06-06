@@ -57,7 +57,7 @@ fn revert_registry(change: &ChangeLog) -> Result<(), String> {
         extract_reg_name(&change.target),
         &change.previous_value
     );
-    let result = powershell::run_ps(&script)?;
+    let result = powershell::run_ps_elevated(&script)?;
     if !result.success {
         return Err(format!("Error al revertir registro: {}", result.stderr));
     }
@@ -69,7 +69,7 @@ fn revert_service(change: &ChangeLog) -> Result<(), String> {
         "Set-Service -Name '{}' -StartupType '{}'",
         &change.target, &change.previous_value
     );
-    let result = powershell::run_ps(&script)?;
+    let result = powershell::run_ps_elevated(&script)?;
     if !result.success {
         return Err(format!("Error al revertir servicio: {}", result.stderr));
     }
@@ -88,7 +88,7 @@ fn revert_dns(change: &ChangeLog) -> Result<(), String> {
             &change.target, &change.previous_value
         )
     };
-    let result = powershell::run_ps(&script)?;
+    let result = powershell::run_ps_elevated(&script)?;
     if !result.success {
         return Err(format!("Error al revertir DNS: {}", result.stderr));
     }
@@ -96,19 +96,38 @@ fn revert_dns(change: &ChangeLog) -> Result<(), String> {
 }
 
 fn revert_startup(change: &ChangeLog) -> Result<(), String> {
-    let enable = change.previous_value == "enabled";
-    let script = if enable {
-        format!(
-            "Get-CimInstance Win32_StartupCommand | Where-Object {{ $_.Name -eq '{}' }} | ForEach-Object {{ $_.Command }}",
-            &change.target
-        )
+    let reg_path = if change.target.contains("HKLM") {
+        "HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Run"
     } else {
-        format!(
-            "Get-CimInstance Win32_StartupCommand | Where-Object {{ $_.Name -eq '{}' }}",
-            &change.target
-        )
+        "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Run"
     };
-    let _ = powershell::run_ps(&script)?;
+
+    if change.new_value == "disabled" {
+        let original_cmd = &change.previous_value;
+        if original_cmd.is_empty() || original_cmd == "enabled" {
+            return Err("No se encontró el comando original para restaurar".to_string());
+        }
+        let script = format!(
+            "New-ItemProperty -Path '{}' -Name '{}' -Value '{}' -PropertyType String -Force",
+            reg_path,
+            change.target.replace('\'', "''"),
+            original_cmd.replace('\'', "''")
+        );
+        let result = powershell::run_ps_elevated(&script)?;
+        if !result.success {
+            return Err(format!("Error al revertir arranque: {}", result.stderr));
+        }
+    } else {
+        let script = format!(
+            "Remove-ItemProperty -Path '{}' -Name '{}' -ErrorAction Stop",
+            reg_path,
+            change.target.replace('\'', "''")
+        );
+        let result = powershell::run_ps_elevated(&script)?;
+        if !result.success {
+            return Err(format!("Error al revertir arranque: {}", result.stderr));
+        }
+    }
     Ok(())
 }
 
@@ -125,7 +144,7 @@ fn revert_ipv6(change: &ChangeLog) -> Result<(), String> {
             &change.target
         )
     };
-    let result = powershell::run_ps(&script)?;
+    let result = powershell::run_ps_elevated(&script)?;
     if !result.success {
         return Err(format!("Error al revertir IPv6: {}", result.stderr));
     }

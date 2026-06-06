@@ -160,7 +160,7 @@ pub async fn set_service_start_type(
         name.replace('\'', "''"),
         new_start_type
     );
-    let result = powershell::run_ps(&script)?;
+    let result = powershell::run_ps_elevated(&script)?;
     if !result.success {
         return Err(format!(
             "Error al modificar servicio {}: {}",

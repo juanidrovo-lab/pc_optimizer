@@ -135,7 +135,7 @@ pub async fn set_dns(
         )
     };
 
-    let result = powershell::run_ps(&script)?;
+    let result = powershell::run_ps_elevated(&script)?;
     if !result.success {
         return Err(format!("Error al cambiar DNS: {}", result.stderr));
     }
@@ -180,7 +180,7 @@ pub async fn toggle_ipv6(
         )
     };
 
-    let result = powershell::run_ps(&script)?;
+    let result = powershell::run_ps_elevated(&script)?;
     if !result.success {
         return Err(format!("Error al modificar IPv6: {}", result.stderr));
     }
@@ -228,7 +228,7 @@ ForEach-Object {{
         tcp_no_delay, tcp_no_delay
     );
 
-    let result = powershell::run_ps(&script)?;
+    let result = powershell::run_ps_elevated(&script)?;
     if !result.success {
         return Err(format!(
             "Error al modificar Nagle: {}",

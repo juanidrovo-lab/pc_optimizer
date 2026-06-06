@@ -89,52 +89,105 @@ pub async fn toggle_startup_item(
     let new_val = if enable { "enabled" } else { "disabled" };
 
     let reg_path = if location.contains("HKCU") {
-        format!("HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Run")
+        "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Run".to_string()
     } else {
-        format!("HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Run")
+        "HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Run".to_string()
     };
 
-    let script = if enable {
-        format!(
-            "# Re-enabling startup item requires knowing the original command\n\
-             # This is stored in the change_log previous_value\n\
-             Write-Output 'Manual re-enable required'"
-        )
+    let needs_elevation = location.contains("HKLM");
+
+    if enable {
+        let last_change = db.get_last_change_for_target("startup", &name)?;
+        let original_command = last_change
+            .map(|c| c.previous_value.clone())
+            .unwrap_or_default();
+        if original_command.is_empty() || original_command == "disabled" {
+            return Err(format!(
+                "No se encontró el comando original para '{}'. Re-habilitar manualmente.",
+                name
+            ));
+        }
+
+        let script = format!(
+            "New-ItemProperty -Path '{}' -Name '{}' -Value '{}' -PropertyType String -Force",
+            reg_path,
+            name.replace('\'', "''"),
+            original_command.replace('\'', "''")
+        );
+
+        let scan_id = db.insert_scan(
+            "arranque",
+            &format!("Programa de inicio habilitado: {}", &name),
+            Some(&format!("Ubicación: {}", &location)),
+            0,
+        )?;
+
+        db.insert_change(
+            Some(scan_id),
+            "arranque",
+            "startup",
+            &name,
+            previous,
+            new_val,
+        )?;
+
+        let result = if needs_elevation {
+            powershell::run_ps_elevated(&script)?
+        } else {
+            powershell::run_ps(&script)?
+        };
+        if !result.success {
+            return Err(format!("Error al habilitar {}: {}", name, result.stderr));
+        }
     } else {
-        format!(
+        let get_cmd_script = format!(
+            "(Get-ItemProperty -Path '{}' -Name '{}' -ErrorAction Stop).'{}'",
+            reg_path,
+            name.replace('\'', "''"),
+            name.replace('\'', "''")
+        );
+        let cmd_result = powershell::run_ps(&get_cmd_script).unwrap_or(powershell::PsResult {
+            stdout: String::new(),
+            stderr: String::new(),
+            success: false,
+        });
+        let original_command = cmd_result.stdout.trim().to_string();
+
+        let prev = if original_command.is_empty() {
+            previous.to_string()
+        } else {
+            original_command
+        };
+
+        let scan_id = db.insert_scan(
+            "arranque",
+            &format!("Programa de inicio deshabilitado: {}", &name),
+            Some(&format!("Ubicación: {}", &location)),
+            0,
+        )?;
+
+        db.insert_change(
+            Some(scan_id),
+            "arranque",
+            "startup",
+            &name,
+            &prev,
+            new_val,
+        )?;
+
+        let script = format!(
             "Remove-ItemProperty -Path '{}' -Name '{}' -ErrorAction Stop",
             reg_path,
             name.replace('\'', "''")
-        )
-    };
+        );
 
-    let scan_id = db.insert_scan(
-        "arranque",
-        &format!(
-            "Programa de inicio {}: {}",
-            if enable { "habilitado" } else { "deshabilitado" },
-            &name
-        ),
-        Some(&format!("Ubicación: {}", &location)),
-        0,
-    )?;
-
-    db.insert_change(
-        Some(scan_id),
-        "arranque",
-        "startup",
-        &name,
-        previous,
-        new_val,
-    )?;
-
-    if !enable {
-        let result = powershell::run_ps(&script)?;
+        let result = if needs_elevation {
+            powershell::run_ps_elevated(&script)?
+        } else {
+            powershell::run_ps(&script)?
+        };
         if !result.success {
-            return Err(format!(
-                "Error al deshabilitar {}: {}",
-                name, result.stderr
-            ));
+            return Err(format!("Error al deshabilitar {}: {}", name, result.stderr));
         }
     }
 

@@ -232,6 +232,38 @@ impl Database {
             .map_err(|e| e.to_string())
     }
 
+    pub fn get_last_change_for_target(
+        &self,
+        change_type: &str,
+        target: &str,
+    ) -> Result<Option<ChangeLog>, String> {
+        let conn = self.conn.lock().map_err(|e| e.to_string())?;
+        let mut stmt = conn
+            .prepare("SELECT id, scan_id, module, change_type, target, previous_value, new_value, reverted, reverted_at, created_at FROM change_log WHERE change_type = ?1 AND target = ?2 ORDER BY created_at DESC LIMIT 1")
+            .map_err(|e| e.to_string())?;
+        let mut rows = stmt
+            .query_map(params![change_type, target], |row| {
+                Ok(ChangeLog {
+                    id: row.get(0)?,
+                    scan_id: row.get(1)?,
+                    module: row.get(2)?,
+                    change_type: row.get(3)?,
+                    target: row.get(4)?,
+                    previous_value: row.get(5)?,
+                    new_value: row.get(6)?,
+                    reverted: row.get(7)?,
+                    reverted_at: row.get(8)?,
+                    created_at: row.get(9)?,
+                })
+            })
+            .map_err(|e| e.to_string())?;
+        match rows.next() {
+            Some(Ok(change)) => Ok(Some(change)),
+            Some(Err(e)) => Err(e.to_string()),
+            None => Ok(None),
+        }
+    }
+
     pub fn get_pending_changes(&self) -> Result<Vec<ChangeLog>, String> {
         let conn = self.conn.lock().map_err(|e| e.to_string())?;
         let mut stmt = conn
